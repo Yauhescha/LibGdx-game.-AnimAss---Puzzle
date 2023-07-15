@@ -5,20 +5,15 @@ import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -36,8 +31,9 @@ public class GameScreen extends ScreenAdapter {
     private OrthographicCamera camera;
 
     private Stage stage;
-    private BitmapFont font;
-    private TextButton.TextButtonStyle skin;
+    private GlyphLayout glyphLayout;
+    private BitmapFont bitmapFont;
+    //    private TextButton.TextButtonStyle skin;
     private Color backgroundColor;
     private SpriteBatch batch;
     TextureRegion[][] textureRegions;
@@ -53,15 +49,19 @@ public class GameScreen extends ScreenAdapter {
         viewport.apply(true);
 
 
+        glyphLayout = new GlyphLayout();
+//        bitmapFont = new BitmapFont();
+
+        bitmapFont = FontUtil.generateFont(Color.BLACK);
+//        bitmapFont.getData().setScale(7);
+
 
         batch = new SpriteBatch();
 
 
-        font = FontUtil.generateFont(Color.BLACK);
-
-        skin = new TextButton.TextButtonStyle();
-        skin.font = font;
-        skin.fontColor = Color.BLACK;
+//        skin = new TextButton.TextButtonStyle();
+//        skin.font = font;
+//        skin.fontColor = Color.BLACK;
 
         backgroundColor = Color.WHITE;
 
@@ -96,13 +96,21 @@ public class GameScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         ScreenUtils.clear(backgroundColor);
+
+        batch.begin();
+        boolean solved = PuzzleService.isSolved(puzzle);
+        glyphLayout.setText(bitmapFont, "Game ended? - " + solved);
+        bitmapFont.draw(batch, glyphLayout, (viewport.getWorldWidth() - glyphLayout.width) / 2, viewport.getWorldHeight() / 2);
+        batch.end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+
     }
 
     @Override
     public void dispose() {
-        font.dispose();
+        bitmapFont.dispose();
         stage.dispose();
     }
 

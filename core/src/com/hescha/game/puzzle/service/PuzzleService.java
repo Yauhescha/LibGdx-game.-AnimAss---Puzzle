@@ -5,7 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.hescha.game.puzzle.model.Puzzle;
 import com.hescha.game.puzzle.model.Tile;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class PuzzleService {
 
@@ -59,12 +63,12 @@ public class PuzzleService {
                     && newY >= 0 && newY < puzzle.getNumberY()) {
                 if (tiles[newY][newX].getTextureRegion() == null) {
                     Tile tile1 = tiles[newY][newX];
-                    float currentX1=tile1.getX();
-                    float currentY1=tile1.getY();
+                    float currentX1 = tile1.getX();
+                    float currentY1 = tile1.getY();
 
                     Tile tile2 = tiles[y][x];
-                    float currentX2=tile2.getX();
-                    float currentY2=tile2.getY();
+                    float currentX2 = tile2.getX();
+                    float currentY2 = tile2.getY();
 
                     tiles[newY][newX] = tile2;
                     tile2.setX(currentX1);
@@ -73,6 +77,8 @@ public class PuzzleService {
                     tiles[y][x] = tile1;
                     tile1.setX(currentX2);
                     tile1.setY(currentY2);
+
+                    puzzle.incrementMove();
                     break;
                 }
             }
@@ -80,20 +86,20 @@ public class PuzzleService {
     }
 
     public static boolean isSolved(Puzzle puzzle) {
-        Tile[][] tiles = puzzle.getTiles();
-
-        int counter = 1;
+        Tile[][] tiles = puzzle.transpose();
+        List<Tile> collect1 = Arrays.stream(tiles)
+                .flatMap(tiles1 -> {
+                    List<Tile> collect = Arrays.stream(tiles1).collect(Collectors.toList());
+                    Collections.reverse(collect);
+                    return collect.stream();
+                })
+                .collect(Collectors.toList());
+        Collections.reverse(collect1);
+        int counter = 0;
         for (int i = 0; i < puzzle.getNumberX(); i++) {
             for (int j = 0; j < puzzle.getNumberY(); j++) {
-                Tile tile = tiles[i][j];
-                if (counter == puzzle.getNumberX() * puzzle.getNumberY()) {
-                    if (tile != null) {
-                        return false;
-                    }
-                } else {
-                    if (tile.getNumber() != counter) {
-                        return false;
-                    }
+                if (i * puzzle.getNumberX() + j + 1 != collect1.get(counter).getNumber()) {
+                    return false;
                 }
                 counter++;
             }
