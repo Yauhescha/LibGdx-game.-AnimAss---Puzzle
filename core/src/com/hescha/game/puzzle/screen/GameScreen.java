@@ -4,17 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.hescha.game.puzzle.AnimAssPuzzle;
 import com.hescha.game.puzzle.util.FontUtil;
 
-public class MainMenuScreen extends ScreenAdapter {
+public class GameScreen extends ScreenAdapter {
     Stage stage;
     BitmapFont font;
     TextButton.TextButtonStyle skin;
@@ -36,37 +32,9 @@ public class MainMenuScreen extends ScreenAdapter {
         skin.font = font;
         skin.fontColor = Color.BLACK;
 
-        prepareActionButton();
-
         backgroundColor = Color.WHITE;
     }
 
-    private void prepareActionButton() {
-        table.reset();
-        Table innerTable = new Table();
-
-            String buttonName = "Play";
-            TextButton button = new TextButton(buttonName, skin);
-            innerTable.add(button).pad(100).row();
-            button.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    AnimAssPuzzle.launcher.setScreen(new GameScreen());
-                }
-            });
-
-        TextButton exit = new TextButton("Exit", skin);
-        innerTable.add(exit).pad(100).row();
-        exit.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.exit();
-            }
-        });
-
-        ScrollPane scrollPane = new ScrollPane(innerTable);
-        table.add(scrollPane);
-    }
 
 
     @Override
