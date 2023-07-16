@@ -2,6 +2,7 @@ package com.hescha.game.puzzle.screen;
 
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
+import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -11,10 +12,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -24,28 +27,23 @@ import com.hescha.game.puzzle.util.FontUtil;
 public class MainMenuScreen extends ScreenAdapter {
     Stage stage;
     BitmapFont font;
-    ImageTextButton.ImageTextButtonStyle textButtonUpStule;
     Table table;
-    Color backgroundColor;
 
 
-    Texture backgroundTexture;
     Texture headerTexture;
     Texture buttonTexture;
     Texture mainImage;
-    private Viewport viewport;
-    private OrthographicCamera camera;
+    Viewport viewport;
     SpriteBatch batch;
 
     @Override
     public void show() {
-        camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         viewport.apply(true);
         batch = new SpriteBatch();
-        backgroundTexture = new Texture(Gdx.files.internal("ui/1 MainMenu.png"));
         buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
         headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
         mainImage = new Texture(Gdx.files.internal("ui/MainImage.png"));
@@ -76,21 +74,22 @@ public class MainMenuScreen extends ScreenAdapter {
         TextureRegionDrawable buttonDrawable3 = new TextureRegionDrawable(bthExit);
         ImageTextButton imageTextButton3 = new ImageTextButton("EXIT", new ImageTextButton.ImageTextButtonStyle(buttonDrawable3, null, null, font));
         table.add(imageTextButton3).center().padTop(10).padBottom(10).row();
-
-
+        imageTextButton3.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
 
         stage = new Stage(viewport);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
-
-        backgroundColor =  new Color(245f/255,232f/255,194f/255,1);
     }
 
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(backgroundColor);
-
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
