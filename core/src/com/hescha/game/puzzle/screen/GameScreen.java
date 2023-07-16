@@ -63,7 +63,7 @@ public class GameScreen extends ScreenAdapter {
 //        skin.font = font;
 //        skin.fontColor = Color.BLACK;
 
-        backgroundColor = Color.WHITE;
+        backgroundColor = new Color(245,232,194,1);
 
         loadImage();
         puzzleService = new PuzzleService();
@@ -82,7 +82,7 @@ public class GameScreen extends ScreenAdapter {
 
     private void loadImage() {
         int size = IMAGE_WIDTH / DIFFICULTY;
-        Texture fullTexture = new Texture(Gdx.files.internal("img/1.jpg"));
+        Texture fullTexture = new Texture(Gdx.files.internal("img/12.jpg"));
 
         int imageWidth = size;
         int imageHeight = size;
