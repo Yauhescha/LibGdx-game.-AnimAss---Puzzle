@@ -3,6 +3,7 @@ package com.hescha.game.puzzle;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Color;
 import com.hescha.game.puzzle.screen.MainMenuScreen;
+import com.hescha.game.puzzle.screen.SelectCategoryScreen;
 
 public class AnimAssPuzzle extends Game {
     public static final float WORLD_WIDTH = 720;
@@ -13,6 +14,6 @@ public class AnimAssPuzzle extends Game {
     @Override
     public void create() {
         launcher = this;
-        setScreen(new MainMenuScreen());
+        setScreen(new SelectCategoryScreen());
     }
 }
