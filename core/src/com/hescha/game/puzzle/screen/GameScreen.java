@@ -19,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -41,17 +43,18 @@ public class GameScreen extends ScreenAdapter {
     private Viewport viewport;
     private OrthographicCamera camera;
 
-    private Stage stageBoard;
+    //    private Stage stageBoard;
     private Stage stageInfo;
     private GlyphLayout glyphLayout;
     private BitmapFont bitmapFont;
     private SpriteBatch batch;
     TextureRegion[][] textureRegions;
     public static Puzzle puzzle;
+    ImageTextButton imageTextButton;
 
     @Override
     public void show() {
-        float worldWidth = 720;
+        float worldWidth = WORLD_WIDTH;
         camera = new OrthographicCamera(worldWidth, WORLD_HEIGHT);
         camera.position.set(worldWidth / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -66,21 +69,24 @@ public class GameScreen extends ScreenAdapter {
 
         puzzle = PuzzleService.newPuzzle(levelType, textureRegions);
         stageInfo = new Stage(viewport, batch);
-        stageBoard = new Stage(viewport, batch);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stageInfo);
-        multiplexer.addProcessor(stageBoard);
         Gdx.input.setInputProcessor(multiplexer);
 
+        BitmapFont font = FontUtil.generateFont(Color.BLACK);
+
         Table table = new Table();
+        stageInfo.addActor(table);
         Table innerTable = new Table();
         table.setFillParent(true);
 
+
         Texture mainImage = new Texture(Gdx.files.internal("ui/EmptyScreen.png"));
-        Image mainimage = new Image(mainImage);
-        table.add(mainimage).top().row();
-        stageInfo.addActor(table);
+        TextureRegion mainBoard = new TextureRegion(mainImage);
+        TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(mainBoard);
+        imageTextButton = new ImageTextButton("Back", new ImageTextButton.ImageTextButtonStyle(buttonDrawable, null, null, font));
+        innerTable.add(imageTextButton).top().row();
 
         Tile[][] tiles = puzzle.getTiles();
         for (Tile[] tile : tiles) {
@@ -88,43 +94,43 @@ public class GameScreen extends ScreenAdapter {
                 innerTable.addActor(tile1);
             }
         }
-        innerTable.setSize(WORLD_WIDTH, levelType.y * levelType.imageHeight);
         stageInfo.addActor(innerTable);
 
 
-        BitmapFont font = FontUtil.generateFont(Color.BLACK);
-
         Texture buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
 
-        TextureRegion btnPlay = new TextureRegion(buttonTexture);
-        TextureRegionDrawable buttonDrawable1 = new TextureRegionDrawable(btnPlay);
+        TextureRegion btnBack = new TextureRegion(buttonTexture);
+        TextureRegionDrawable buttonDrawable1 = new TextureRegionDrawable(btnBack);
         ImageTextButton imageTextButton1 = new ImageTextButton("Back", new ImageTextButton.ImageTextButtonStyle(buttonDrawable1, null, null, font));
-        table.add(imageTextButton1).center().padTop(10).padBottom(10).row();
+        innerTable.add(imageTextButton1).center().padTop(10).padBottom(levelType.y * levelType.imageHeight).row();
         imageTextButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen());
+                AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType));
             }
         });
 
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
+        Label emptyLabel1 = new Label(" ", labelStyle);
+        innerTable.add(emptyLabel1);
+
+        ScrollPane scrollPane = new ScrollPane(innerTable);
+        table.add(scrollPane);
 
     }
 
 
+
     @Override
     public void render(float delta) {
-        batch.setProjectionMatrix(camera.projection);
-        batch.setTransformMatrix(camera.view);
-        ScreenUtils.clear(backgroundColor);
-
-        batch.begin();
         boolean solved = PuzzleService.isSolved(puzzle);
-        glyphLayout.setText(bitmapFont, "Game ended? - " + solved);
-        bitmapFont.draw(batch, glyphLayout, (viewport.getWorldWidth() - glyphLayout.width) / 2, viewport.getWorldHeight() / 2);
-        batch.end();
-
-        stageBoard.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        stageBoard.draw();
+        String status = solved?"Solved":"Playing";
+        String newText = "Step: " + puzzle.getMovesNumber() + "\n"
+                + "Status: " + status + "\n"
+                +"Moves: " + puzzle.getMovesNumber() + "\n"
+                +"Moves min: " + 15;
+        imageTextButton.getLabel().setText(newText);
+        ScreenUtils.clear(backgroundColor);
 
         stageInfo.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stageInfo.draw();
@@ -133,7 +139,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         bitmapFont.dispose();
-        stageBoard.dispose();
+        stageInfo.dispose();
     }
 
     @Override

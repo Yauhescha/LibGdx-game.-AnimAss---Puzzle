@@ -13,6 +13,9 @@ public class Puzzle {
     public void incrementMove() {
         movesNumber++;
     }
+    public void clearMove() {
+        movesNumber=0;
+    }
 
 }
 

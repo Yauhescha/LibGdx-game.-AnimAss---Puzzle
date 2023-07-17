@@ -22,15 +22,17 @@ public class PuzzleService {
         puzzle.setLevel(levelType);
         puzzle.setTiles(initTiles(levelType, textureRegions));
         shuffle(puzzle);
+        puzzle.clearMove();
         return puzzle;
     }
 
     private static void shuffle(Puzzle puzzle) {
         int counter = 0;
+        int x, y;
         while (counter < 10_000) {
-            int x = RANDOM.nextInt(puzzle.getLevel().x);
-            int y = RANDOM.nextInt(puzzle.getLevel().y);
-            makeMove(puzzle, x, y);
+            x = RANDOM.nextInt(puzzle.getLevel().x);
+            y = RANDOM.nextInt(puzzle.getLevel().y);
+            makeMove(puzzle, y, x);
             counter++;
         }
     }
