@@ -4,77 +4,106 @@ package com.hescha.game.puzzle.service;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.hescha.game.puzzle.model.Puzzle;
 import com.hescha.game.puzzle.model.Tile;
+import com.hescha.game.puzzle.screen.LevelType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class PuzzleService {
-
-    public static int SIZE = 512 / 3;
     public static final int[][] DIRECTIONS = new int[][]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
     public static final Random RANDOM = new Random();
 
-    public static Puzzle newPuzzle(int difficulty, TextureRegion[][] textureRegions) {
+    public static Puzzle newPuzzle(LevelType levelType, TextureRegion[][] textureRegions) {
         Puzzle puzzle = new Puzzle();
-        puzzle.setLevel(difficulty);
-        puzzle.setTiles(initTiles(difficulty, textureRegions));
-        shuffle(puzzle);
+        puzzle.setLevel(levelType);
+        puzzle.setTiles(initTiles(levelType, textureRegions));
+//        shuffle(puzzle);
         return puzzle;
     }
 
     private static void shuffle(Puzzle puzzle) {
         int counter = 0;
         while (counter < 10_000) {
-            int x = RANDOM.nextInt(puzzle.getLevel());
-            int y = RANDOM.nextInt(puzzle.getLevel());
+            int x = RANDOM.nextInt(puzzle.getLevel().x);
+            int y = RANDOM.nextInt(puzzle.getLevel().y);
             makeMove(puzzle, x, y);
             counter++;
         }
     }
 
-    private static Tile[][] initTiles(int level, TextureRegion[][] textureRegions) {
-        Tile[][] tiles = new Tile[level][level];
-        for (int i = 0; i < level; i++) {
-            for (int j = 0; j < level; j++) {
-                int value = i * level + j + 1;
-                if (value == level * level) {
-                    tiles[i][j] = new Tile(null);
+    private static Tile[][] initTiles(LevelType level, TextureRegion[][] textureRegions) {
+        List<List<TextureRegion>> transpose =transpose(rotateMatrixClockwise(textureRegions));
+//        List<List<TextureRegion>> transpose =transpose(textureRegions);
+        Tile[][] tiles = new Tile[level.x][level.y];
+        int counter=0;
+        for (int i = 0; i < level.x; i++) {
+            for (int j = 0; j < level.y; j++) {
+                if (counter == level.x * (level.y-1)) {
+                    tiles[i][j] = new Tile(level, null);
                 } else {
-                    tiles[i][j] = new Tile(textureRegions[i][j]);
+                    tiles[i][j] = new Tile(level, transpose.get(i).get(j));
                 }
-                tiles[i][j].setX(i * SIZE);
-                tiles[i][j].setY(j * SIZE);
-                tiles[i][j].setNumber(value);
+                tiles[i][j].setX(i * level.imageWidth);
+                tiles[i][j].setY(j * level.imageHeight);
+
+//                tiles[i][j].setX((level.x-i-1) * level.imageWidth);
+//                tiles[i][j].setY((level.y-j-1) * level.imageHeight);
+                tiles[i][j].setNumber(counter);
+                counter++;
             }
         }
         return tiles;
     }
+    public static TextureRegion[][] rotateMatrixClockwise(TextureRegion[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
 
-    public static void makeMove(Puzzle puzzle, int x, int y) {
+        TextureRegion[][] rotatedMatrix = new TextureRegion[cols][rows];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                rotatedMatrix[j][rows - i - 1] = matrix[i][j];
+            }
+        }
+
+       return rotatedMatrix;
+    }
+
+
+    private static List<List<TextureRegion>> transpose(TextureRegion[][] array) {
+        List<List<TextureRegion>> list = new ArrayList<>();
+        int rows = array.length;
+        for (int i = 0; i < rows; i++) {
+            List<TextureRegion> sublist = new ArrayList<>();
+            sublist.addAll(Arrays.asList(array[i]));
+            list.add(sublist);
+        }
+        return list;
+    }
+    public static void makeMove(Puzzle puzzle, int y, int x) {
         Tile[][] tiles = puzzle.getTiles();
         for (int[] direction : DIRECTIONS) {
             int newX = x + direction[0];
             int newY = y + direction[1];
 
-            if (newX >= 0 && newX < puzzle.getNumberX()
-                    && newY >= 0 && newY < puzzle.getNumberY()) {
-                if (tiles[newY][newX].getTextureRegion() == null) {
-                    Tile tile1 = tiles[newY][newX];
+            if (newX >= 0 && newX < puzzle.getLevel().x
+                    && newY >= 0 && newY < puzzle.getLevel().y) {
+                if (tiles[newX][newY].getTextureRegion() == null) {
+                    Tile tile1 = tiles[newX][newY];
                     float currentX1 = tile1.getX();
                     float currentY1 = tile1.getY();
 
-                    Tile tile2 = tiles[y][x];
+                    Tile tile2 = tiles[x][y];
                     float currentX2 = tile2.getX();
                     float currentY2 = tile2.getY();
 
-                    tiles[newY][newX] = tile2;
+                    tiles[newX][newY] = tile2;
                     tile2.setX(currentX1);
                     tile2.setY(currentY1);
 
-                    tiles[y][x] = tile1;
+                    tiles[x][y] = tile1;
                     tile1.setX(currentX2);
                     tile1.setY(currentY2);
 
@@ -86,19 +115,11 @@ public class PuzzleService {
     }
 
     public static boolean isSolved(Puzzle puzzle) {
-        Tile[][] tiles = puzzle.transpose();
-        List<Tile> collect1 = Arrays.stream(tiles)
-                .flatMap(tiles1 -> {
-                    List<Tile> collect = Arrays.stream(tiles1).collect(Collectors.toList());
-                    Collections.reverse(collect);
-                    return collect.stream();
-                })
-                .collect(Collectors.toList());
-        Collections.reverse(collect1);
+        Tile[][] tiles = puzzle.getTiles();
         int counter = 0;
-        for (int i = 0; i < puzzle.getNumberX(); i++) {
-            for (int j = 0; j < puzzle.getNumberY(); j++) {
-                if (i * puzzle.getNumberX() + j + 1 != collect1.get(counter).getNumber()) {
+        for (Tile[] tile : tiles) {
+            for (int j = 0; j < tiles[0].length; j++) {
+                if (counter != tile[j].getNumber()) {
                     return false;
                 }
                 counter++;

@@ -2,6 +2,7 @@ package com.hescha.game.puzzle.screen;
 
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
+import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -22,10 +23,12 @@ import com.hescha.game.puzzle.model.Tile;
 import com.hescha.game.puzzle.service.PuzzleService;
 import com.hescha.game.puzzle.util.FontUtil;
 
-public class GameScreen extends ScreenAdapter {
-    public static final int IMAGE_WIDTH = 512;
-    public static final int DIFFICULTY = 3;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+public class GameScreen extends ScreenAdapter {
+    final LevelType levelType;
+    final Texture levelTexture;
 
     private Viewport viewport;
     private OrthographicCamera camera;
@@ -33,11 +36,8 @@ public class GameScreen extends ScreenAdapter {
     private Stage stage;
     private GlyphLayout glyphLayout;
     private BitmapFont bitmapFont;
-    //    private TextButton.TextButtonStyle skin;
-    private Color backgroundColor;
     private SpriteBatch batch;
     TextureRegion[][] textureRegions;
-    PuzzleService puzzleService;
     public static Puzzle puzzle;
 
     @Override
@@ -47,27 +47,14 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         viewport.apply(true);
-
-
-        glyphLayout = new GlyphLayout();
-//        bitmapFont = new BitmapFont();
-
-        bitmapFont = FontUtil.generateFont(Color.BLACK);
-//        bitmapFont.getData().setScale(7);
-
-
         batch = new SpriteBatch();
 
+        glyphLayout = new GlyphLayout();
+        bitmapFont = FontUtil.generateFont(Color.BLACK);
 
-//        skin = new TextButton.TextButtonStyle();
-//        skin.font = font;
-//        skin.fontColor = Color.BLACK;
+        textureRegions = TextureRegion.split(levelTexture, levelType.imageWidth, levelType.imageHeight);
 
-        backgroundColor = new Color(245,232,194,1);
-
-        loadImage();
-        puzzleService = new PuzzleService();
-        puzzle = puzzleService.newPuzzle(3, textureRegions);
+        puzzle = PuzzleService.newPuzzle(levelType, textureRegions);
         stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
 
@@ -77,17 +64,6 @@ public class GameScreen extends ScreenAdapter {
                 stage.addActor(tile1);
             }
         }
-    }
-
-
-    private void loadImage() {
-        int size = IMAGE_WIDTH / DIFFICULTY;
-        Texture fullTexture = new Texture(Gdx.files.internal("img/12.jpg"));
-
-        int imageWidth = size;
-        int imageHeight = size;
-
-        textureRegions = TextureRegion.split(fullTexture, imageWidth, imageHeight);
     }
 
 
@@ -105,7 +81,6 @@ public class GameScreen extends ScreenAdapter {
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
-
     }
 
     @Override
