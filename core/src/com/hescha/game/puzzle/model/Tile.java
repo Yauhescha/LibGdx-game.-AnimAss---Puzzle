@@ -1,5 +1,7 @@
 package com.hescha.game.puzzle.model;
 
+import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -22,23 +24,18 @@ public class Tile extends Actor {
     private BitmapFont bitmapFont;
 
     public Tile(LevelType level, TextureRegion textureRegion) {
-
-        glyphLayout = new GlyphLayout();
-        bitmapFont = new BitmapFont();
-        bitmapFont.getData().setScale(7);
-
-
+        float xPadding = (WORLD_WIDTH - level.x * level.imageWidth) / 2;
         this.textureRegion = textureRegion;
         setSize(level.imageWidth, level.imageHeight);
 
         addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Touched: x - " + getX()+", y - " + getY());
+                System.out.println("Touched: x - " + getX() + ", y - " + getY());
                 System.out.println("Touched number: " + number);
                 PuzzleService.makeMove(GameScreen.puzzle,
-                        (int) getY()/level.imageHeight,
-                        (int) getX()/ level.imageWidth);
+                        (int) getY() / level.imageHeight,
+                        (int) (getX() - xPadding) / level.imageWidth);
             }
         });
     }
@@ -48,8 +45,6 @@ public class Tile extends Actor {
         if (textureRegion != null) {
             batch.draw(textureRegion, getX(), getY());
         }
-        glyphLayout.setText(bitmapFont, number+"");
-        bitmapFont.draw(batch, glyphLayout, getX(), getY());
     }
 }
 

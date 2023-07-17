@@ -66,9 +66,8 @@ public class SelectCategoryScreen extends ScreenAdapter {
         createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X3))));
         createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X4))));
         createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_5X5))));
-        createButton(buttonTexture, "6x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_6X6))));
+        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X5))));
         createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X6))));
-        createButton(buttonTexture, "6x9", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_6X9))));
 
 
         ScrollPane scrollPane = new ScrollPane(innerTable);

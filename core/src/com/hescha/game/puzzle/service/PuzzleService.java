@@ -1,6 +1,8 @@
 package com.hescha.game.puzzle.service;
 
 
+import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.hescha.game.puzzle.model.Puzzle;
 import com.hescha.game.puzzle.model.Tile;
@@ -19,7 +21,7 @@ public class PuzzleService {
         Puzzle puzzle = new Puzzle();
         puzzle.setLevel(levelType);
         puzzle.setTiles(initTiles(levelType, textureRegions));
-//        shuffle(puzzle);
+        shuffle(puzzle);
         return puzzle;
     }
 
@@ -34,28 +36,27 @@ public class PuzzleService {
     }
 
     private static Tile[][] initTiles(LevelType level, TextureRegion[][] textureRegions) {
-        List<List<TextureRegion>> transpose =transpose(rotateMatrixClockwise(textureRegions));
-//        List<List<TextureRegion>> transpose =transpose(textureRegions);
+        float xPadding = (WORLD_WIDTH - level.x * level.imageWidth) / 2;
+        List<List<TextureRegion>> transpose = transpose(rotateMatrixClockwise(textureRegions));
         Tile[][] tiles = new Tile[level.x][level.y];
-        int counter=0;
+        int counter = 0;
         for (int i = 0; i < level.x; i++) {
             for (int j = 0; j < level.y; j++) {
-                if (counter == level.x * (level.y-1)) {
+                if (counter == level.y * (level.x - 1)) {
                     tiles[i][j] = new Tile(level, null);
                 } else {
                     tiles[i][j] = new Tile(level, transpose.get(i).get(j));
                 }
-                tiles[i][j].setX(i * level.imageWidth);
+                tiles[i][j].setX(xPadding + i * level.imageWidth);
                 tiles[i][j].setY(j * level.imageHeight);
 
-//                tiles[i][j].setX((level.x-i-1) * level.imageWidth);
-//                tiles[i][j].setY((level.y-j-1) * level.imageHeight);
                 tiles[i][j].setNumber(counter);
                 counter++;
             }
         }
         return tiles;
     }
+
     public static TextureRegion[][] rotateMatrixClockwise(TextureRegion[][] matrix) {
         int rows = matrix.length;
         int cols = matrix[0].length;
@@ -68,7 +69,7 @@ public class PuzzleService {
             }
         }
 
-       return rotatedMatrix;
+        return rotatedMatrix;
     }
 
 
@@ -82,6 +83,7 @@ public class PuzzleService {
         }
         return list;
     }
+
     public static void makeMove(Puzzle puzzle, int y, int x) {
         Tile[][] tiles = puzzle.getTiles();
         for (int[] direction : DIRECTIONS) {

@@ -81,16 +81,12 @@ public class SelectLevelScreen extends ScreenAdapter {
                 levelTexture = new Texture(Gdx.files.internal("levels/5x5/3.jpg"));
             }
 
-            if (LevelType.LEVEL_6X6 == levelType) {
-                levelTexture = new Texture(Gdx.files.internal("levels/6x6/4.jpg"));
+            if (LevelType.LEVEL_3X5 == levelType) {
+                levelTexture = new Texture(Gdx.files.internal("levels/3x5/6.jpg"));
             }
 
             if (LevelType.LEVEL_4X6 == levelType) {
                 levelTexture = new Texture(Gdx.files.internal("levels/4x6/5.jpg"));
-            }
-
-            if (LevelType.LEVEL_6X9 == levelType) {
-                levelTexture = new Texture(Gdx.files.internal("levels/6x9/6.jpg"));
             }
 
             Texture finalLevelTexture = levelTexture;
