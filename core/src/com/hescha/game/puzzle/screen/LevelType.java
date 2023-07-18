@@ -1,9 +1,11 @@
 package com.hescha.game.puzzle.screen;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum LevelType {
+public enum LevelType implements Serializable {
     LEVEL_3X3(3, 3, 170, 170),
     LEVEL_4X4(4, 4, 128, 128),
     LEVEL_5X5(5, 5, 102, 102),

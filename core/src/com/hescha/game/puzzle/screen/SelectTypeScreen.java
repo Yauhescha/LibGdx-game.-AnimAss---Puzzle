@@ -28,7 +28,7 @@ import com.hescha.game.puzzle.AnimAssPuzzle;
 import com.hescha.game.puzzle.MyFunctionalInterface;
 import com.hescha.game.puzzle.util.FontUtil;
 
-public class SelectCategoryScreen extends ScreenAdapter {
+public class SelectTypeScreen extends ScreenAdapter {
     Stage stage;
     BitmapFont font;
     Table table;
@@ -75,6 +75,7 @@ public class SelectCategoryScreen extends ScreenAdapter {
         stage = new Stage(viewport);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
+
     }
 
     private void createButton(Texture headerTexture, String CATEGORIES, int padBottom, EventListener listener) {

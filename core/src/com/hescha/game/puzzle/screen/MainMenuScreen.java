@@ -3,6 +3,7 @@ package com.hescha.game.puzzle.screen;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
+import static com.hescha.game.puzzle.util.LevelUtil.prepareDefaultLevels;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -19,11 +20,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.hescha.game.puzzle.AnimAssPuzzle;
+import com.hescha.game.puzzle.model.Level;
 import com.hescha.game.puzzle.util.FontUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainMenuScreen extends ScreenAdapter {
     Stage stage;
@@ -68,7 +74,7 @@ public class MainMenuScreen extends ScreenAdapter {
         imageTextButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen());
+                AnimAssPuzzle.launcher.setScreen(new SelectTypeScreen());
             }
         });
 
@@ -91,8 +97,23 @@ public class MainMenuScreen extends ScreenAdapter {
         stage = new Stage(viewport);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
-    }
 
+        prepareDefaultLevels();
+
+
+//        FileHandle file = Gdx.files.internal(chapter.name().toLowerCase() + SlASH + ticketNumber + JPG);
+//        if (file.exists()) {
+//            loadImage(innerTable, file);
+//        } else {
+//            file = Gdx.files.internal(chapter.name().toLowerCase() + SlASH + ticketNumber + PNG);
+//            if (file.exists()) {
+//                loadImage(innerTable, file);
+//            }
+//        }
+
+
+        System.out.println("end");
+    }
 
     @Override
     public void render(float delta) {

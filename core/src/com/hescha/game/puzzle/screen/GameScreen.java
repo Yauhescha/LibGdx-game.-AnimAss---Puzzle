@@ -41,9 +41,7 @@ public class GameScreen extends ScreenAdapter {
     final Texture levelTexture;
 
     private Viewport viewport;
-    private OrthographicCamera camera;
 
-    //    private Stage stageBoard;
     private Stage stageInfo;
     private GlyphLayout glyphLayout;
     private BitmapFont bitmapFont;
@@ -51,11 +49,13 @@ public class GameScreen extends ScreenAdapter {
     TextureRegion[][] textureRegions;
     public static Puzzle puzzle;
     ImageTextButton imageTextButton;
+    private String levelName="levelName";
+    String movesMin = "-";
 
     @Override
     public void show() {
         float worldWidth = WORLD_WIDTH;
-        camera = new OrthographicCamera(worldWidth, WORLD_HEIGHT);
+        OrthographicCamera camera = new OrthographicCamera(worldWidth, WORLD_HEIGHT);
         camera.position.set(worldWidth / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
         viewport = new FitViewport(worldWidth, WORLD_HEIGHT, camera);
@@ -125,10 +125,11 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         boolean solved = PuzzleService.isSolved(puzzle);
         String status = solved?"Solved":"Playing";
-        String newText = "Step: " + puzzle.getMovesNumber() + "\n"
+
+        String newText = "Level: \n" +levelName+"\n"
                 + "Status: " + status + "\n"
                 +"Moves: " + puzzle.getMovesNumber() + "\n"
-                +"Moves min: " + 15;
+                +"Moves min: " + movesMin;
         imageTextButton.getLabel().setText(newText);
         ScreenUtils.clear(backgroundColor);
 

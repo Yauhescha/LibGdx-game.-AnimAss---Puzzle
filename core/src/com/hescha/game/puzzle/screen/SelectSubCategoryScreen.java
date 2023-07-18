@@ -3,7 +3,11 @@ package com.hescha.game.puzzle.screen;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
-import static com.hescha.game.puzzle.util.LevelUtil.loadLevels;
+import static com.hescha.game.puzzle.screen.LevelType.LEVEL_3X3;
+import static com.hescha.game.puzzle.screen.LevelType.LEVEL_3X5;
+import static com.hescha.game.puzzle.screen.LevelType.LEVEL_4X4;
+import static com.hescha.game.puzzle.screen.LevelType.LEVEL_4X6;
+import static com.hescha.game.puzzle.screen.LevelType.LEVEL_5X5;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -21,24 +25,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.hescha.game.puzzle.AnimAssPuzzle;
 import com.hescha.game.puzzle.MyFunctionalInterface;
-import com.hescha.game.puzzle.model.Level;
 import com.hescha.game.puzzle.util.FontUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public class SelectLevelScreen extends ScreenAdapter {
-    final LevelType levelType;
+public class SelectSubCategoryScreen extends ScreenAdapter {
     Stage stage;
     BitmapFont font;
     Table table;
@@ -62,7 +56,7 @@ public class SelectLevelScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
         headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
-//        backgroundImage = new Texture(Gdx.files.internal("ui/3 SelectLevel.png"));
+//        backgroundImage = new Texture(Gdx.files.internal("ui/2 SelectCategory.PNG"));
 
         table = new Table();
         table.setFillParent(true);
@@ -71,45 +65,13 @@ public class SelectLevelScreen extends ScreenAdapter {
         innerTable.setFillParent(true);
 
 
-        createButton(headerTexture, levelType.name().replace("_", " "), 50, null);
-        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectTypeScreen())));
-
-        ArrayList<Level> levels = loadLevels();
-        List<Level> filteredList = levels.stream().filter(level -> levelType == level.getType()).collect(Collectors.toList());
-
-        for (Level level : filteredList) {
-            Texture finalLevelTexture  = new Texture(Gdx.files.internal(level.getTexturePath()));
-            createButton(buttonTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(levelType, finalLevelTexture))));
-
-
-//        }
-//        for (int i = 0; i < 1; i++) {
-
-//
-//            Texture levelTexture = null;
-//            if (LevelType.LEVEL_3X3 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/3x3/1.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_4X4 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/4x4/2.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_5X5 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/5x5/3.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_3X5 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/3x5/6.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_4X6 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/4x6/5.jpg"));
-//            }
-//
-//            Texture finalLevelTexture = levelTexture;
-//            createButton(buttonTexture, "Level " + i, 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(levelType, finalLevelTexture))));
-        }
+        createButton(headerTexture, "CATEGORIES", 50, null);
+        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(new MainMenuScreen())));
+        createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X3))));
+        createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X4))));
+        createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_5X5))));
+        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X5))));
+        createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X6))));
 
 
         ScrollPane scrollPane = new ScrollPane(innerTable);
@@ -163,3 +125,4 @@ public class SelectLevelScreen extends ScreenAdapter {
         };
     }
 }
+
