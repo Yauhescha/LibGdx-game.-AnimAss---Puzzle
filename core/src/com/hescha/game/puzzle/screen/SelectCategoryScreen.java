@@ -3,11 +3,7 @@ package com.hescha.game.puzzle.screen;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
-import static com.hescha.game.puzzle.screen.LevelType.LEVEL_3X3;
-import static com.hescha.game.puzzle.screen.LevelType.LEVEL_3X5;
-import static com.hescha.game.puzzle.screen.LevelType.LEVEL_4X4;
-import static com.hescha.game.puzzle.screen.LevelType.LEVEL_4X6;
-import static com.hescha.game.puzzle.screen.LevelType.LEVEL_5X5;
+import static com.hescha.game.puzzle.util.LevelUtil.loadLevels;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -30,9 +26,19 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.hescha.game.puzzle.AnimAssPuzzle;
 import com.hescha.game.puzzle.MyFunctionalInterface;
+import com.hescha.game.puzzle.model.Level;
 import com.hescha.game.puzzle.util.FontUtil;
 
-public class SelectSubCategoryScreen extends ScreenAdapter {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class SelectCategoryScreen extends ScreenAdapter {
+    public static SelectCategoryScreen screen;
+    final LevelType levelType;
     Stage stage;
     BitmapFont font;
     Table table;
@@ -48,6 +54,7 @@ public class SelectSubCategoryScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        screen=this;
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -56,7 +63,7 @@ public class SelectSubCategoryScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
         headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
-//        backgroundImage = new Texture(Gdx.files.internal("ui/2 SelectCategory.PNG"));
+//        backgroundImage = new Texture(Gdx.files.internal("ui/3 SelectLevel.png"));
 
         table = new Table();
         table.setFillParent(true);
@@ -65,13 +72,19 @@ public class SelectSubCategoryScreen extends ScreenAdapter {
         innerTable.setFillParent(true);
 
 
-        createButton(headerTexture, "CATEGORIES", 50, null);
-        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(new MainMenuScreen())));
-        createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X3))));
-        createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X4))));
-        createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_5X5))));
-        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X5))));
-        createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X6))));
+        createButton(headerTexture, levelType.name().replace("_", " "), 50, null);
+        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(SelectTypeScreen.screen)));
+
+        ArrayList<Level> levels = loadLevels();
+        List<String> categories = levels.stream()
+                .filter(level -> levelType == level.getType())
+                .map(Level::getCategory)
+                .distinct()
+                .collect(Collectors.toList());
+
+        for (String category:categories) {
+            createButton(buttonTexture, category, 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType, category, levels))));
+        }
 
 
         ScrollPane scrollPane = new ScrollPane(innerTable);
@@ -125,4 +138,3 @@ public class SelectSubCategoryScreen extends ScreenAdapter {
         };
     }
 }
-

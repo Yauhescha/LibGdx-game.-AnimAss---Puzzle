@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuScreen extends ScreenAdapter {
+    public static MainMenuScreen screen;
     Stage stage;
     BitmapFont font;
     Table table;
@@ -45,6 +46,7 @@ public class MainMenuScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        screen=this;
         OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();

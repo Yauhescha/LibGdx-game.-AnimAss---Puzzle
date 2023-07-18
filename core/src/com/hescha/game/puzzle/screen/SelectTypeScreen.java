@@ -29,6 +29,7 @@ import com.hescha.game.puzzle.MyFunctionalInterface;
 import com.hescha.game.puzzle.util.FontUtil;
 
 public class SelectTypeScreen extends ScreenAdapter {
+    public static SelectTypeScreen screen;
     Stage stage;
     BitmapFont font;
     Table table;
@@ -44,6 +45,7 @@ public class SelectTypeScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        screen = this;
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -62,12 +64,12 @@ public class SelectTypeScreen extends ScreenAdapter {
 
 
         createButton(headerTexture, "CATEGORIES", 50, null);
-        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(new MainMenuScreen())));
-        createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X3))));
-        createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X4))));
-        createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_5X5))));
-        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_3X5))));
-        createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(LEVEL_4X6))));
+        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(MainMenuScreen.screen)));
+        createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X3))));
+        createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X4))));
+        createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_5X5))));
+        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X5))));
+        createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X6))));
 
 
         ScrollPane scrollPane = new ScrollPane(innerTable);

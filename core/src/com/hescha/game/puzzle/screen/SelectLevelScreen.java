@@ -38,7 +38,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class SelectLevelScreen extends ScreenAdapter {
-    final LevelType levelType;
+    public static SelectLevelScreen screen;
+    LevelType levelType;
+    String category;
+    List<Level> levels;
     Stage stage;
     BitmapFont font;
     Table table;
@@ -52,8 +55,15 @@ public class SelectLevelScreen extends ScreenAdapter {
     SpriteBatch batch;
     OrthographicCamera camera;
 
+    public SelectLevelScreen(LevelType levelType, String category, ArrayList<Level> levels) {
+        this.levelType = levelType;
+        this.category = category;
+        this.levels = levels.stream().filter(level -> category.equals(level.getCategory())).collect(Collectors.toList());
+    }
+
     @Override
     public void show() {
+        screen = this;
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -71,44 +81,13 @@ public class SelectLevelScreen extends ScreenAdapter {
         innerTable.setFillParent(true);
 
 
-        createButton(headerTexture, levelType.name().replace("_", " "), 50, null);
-        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectTypeScreen())));
-
-        ArrayList<Level> levels = loadLevels();
-        List<Level> filteredList = levels.stream().filter(level -> levelType == level.getType()).collect(Collectors.toList());
-
-        for (Level level : filteredList) {
-            Texture finalLevelTexture  = new Texture(Gdx.files.internal(level.getTexturePath()));
-            createButton(buttonTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(levelType, finalLevelTexture))));
+        createButton(headerTexture, levelType.name().replace("_", " ") + "\n" + category, 50, null);
+        createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(SelectCategoryScreen.screen)));
 
 
-//        }
-//        for (int i = 0; i < 1; i++) {
-
-//
-//            Texture levelTexture = null;
-//            if (LevelType.LEVEL_3X3 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/3x3/1.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_4X4 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/4x4/2.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_5X5 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/5x5/3.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_3X5 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/3x5/6.jpg"));
-//            }
-//
-//            if (LevelType.LEVEL_4X6 == levelType) {
-//                levelTexture = new Texture(Gdx.files.internal("levels/4x6/5.jpg"));
-//            }
-//
-//            Texture finalLevelTexture = levelTexture;
-//            createButton(buttonTexture, "Level " + i, 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(levelType, finalLevelTexture))));
+        for (Level level : levels) {
+            Texture finalLevelTexture = new Texture(Gdx.files.internal(level.getTexturePath()));
+            createButton(buttonTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(level))));
         }
 
 

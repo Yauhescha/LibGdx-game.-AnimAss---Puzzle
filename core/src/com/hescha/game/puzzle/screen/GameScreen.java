@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.hescha.game.puzzle.AnimAssPuzzle;
+import com.hescha.game.puzzle.model.Level;
 import com.hescha.game.puzzle.model.Puzzle;
 import com.hescha.game.puzzle.model.Tile;
 import com.hescha.game.puzzle.service.PuzzleService;
@@ -37,8 +38,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class GameScreen extends ScreenAdapter {
-    final LevelType levelType;
-    final Texture levelTexture;
+    final Level level;
+    Texture levelTexture;
+    LevelType levelType;
 
     private Viewport viewport;
 
@@ -49,7 +51,6 @@ public class GameScreen extends ScreenAdapter {
     TextureRegion[][] textureRegions;
     public static Puzzle puzzle;
     ImageTextButton imageTextButton;
-    private String levelName="levelName";
     String movesMin = "-";
 
     @Override
@@ -65,6 +66,8 @@ public class GameScreen extends ScreenAdapter {
         glyphLayout = new GlyphLayout();
         bitmapFont = FontUtil.generateFont(Color.BLACK);
 
+        levelType = level.getType();
+        levelTexture = new Texture(Gdx.files.internal(level.getTexturePath()));
         textureRegions = TextureRegion.split(levelTexture, levelType.imageWidth, levelType.imageHeight);
 
         puzzle = PuzzleService.newPuzzle(levelType, textureRegions);
@@ -106,7 +109,7 @@ public class GameScreen extends ScreenAdapter {
         imageTextButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType));
+                AnimAssPuzzle.launcher.setScreen(SelectLevelScreen.screen);
             }
         });
 
@@ -120,16 +123,15 @@ public class GameScreen extends ScreenAdapter {
     }
 
 
-
     @Override
     public void render(float delta) {
         boolean solved = PuzzleService.isSolved(puzzle);
-        String status = solved?"Solved":"Playing";
+        String status = solved ? "Solved" : "Playing";
 
-        String newText = "Level: \n" +levelName+"\n"
+        String newText = "Level: \n" + level.getName() + "\n"
                 + "Status: " + status + "\n"
-                +"Moves: " + puzzle.getMovesNumber() + "\n"
-                +"Moves min: " + movesMin;
+                + "Moves: " + puzzle.getMovesNumber() + "\n"
+                + "Moves min: " + movesMin;
         imageTextButton.getLabel().setText(newText);
         ScreenUtils.clear(backgroundColor);
 
