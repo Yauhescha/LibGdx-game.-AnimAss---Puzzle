@@ -9,6 +9,8 @@ public class Puzzle {
     private int movesNumber;
     private LevelType level;
     private Tile[][] tiles;
+    private boolean isSolved;
+    private boolean isSaved;
 
     public void incrementMove() {
         movesNumber++;

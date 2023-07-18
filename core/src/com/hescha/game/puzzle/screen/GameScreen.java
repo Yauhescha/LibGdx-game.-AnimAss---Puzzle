@@ -7,6 +7,7 @@ import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -51,7 +52,8 @@ public class GameScreen extends ScreenAdapter {
     TextureRegion[][] textureRegions;
     public static Puzzle puzzle;
     ImageTextButton imageTextButton;
-    String movesMin = "-";
+    Integer movesMin;
+    String levelScoreSavingPath;
 
     @Override
     public void show() {
@@ -120,13 +122,31 @@ public class GameScreen extends ScreenAdapter {
         ScrollPane scrollPane = new ScrollPane(innerTable);
         table.add(scrollPane);
 
+
+        levelScoreSavingPath = levelType.name() + "-" + level.getCategory() + "-" + level.getName();
+        Preferences prefs = Gdx.app.getPreferences("AnimAss_Puzzle");
+        movesMin = prefs.getInteger(levelScoreSavingPath, 9999);
     }
 
 
     @Override
     public void render(float delta) {
-        boolean solved = PuzzleService.isSolved(puzzle);
-        String status = solved ? "Solved" : "Playing";
+        if (!puzzle.isSolved()) {
+            puzzle.setSolved(PuzzleService.isSolved(puzzle));
+        } else {
+            if (!puzzle.isSaved()) {
+                puzzle.setSaved(true);
+                int movesNumber = puzzle.getMovesNumber();
+
+                if (movesMin > movesNumber) {
+                    Preferences prefs = Gdx.app.getPreferences("AnimAss_Puzzle");
+                    prefs.putInteger(levelScoreSavingPath, movesNumber);
+                    prefs.flush();
+                }
+            }
+        }
+
+        String status = puzzle.isSolved() ? "Solved" : "Playing";
 
         String newText = "Level: \n" + level.getName() + "\n"
                 + "Status: " + status + "\n"

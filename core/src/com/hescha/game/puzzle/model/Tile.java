@@ -33,9 +33,10 @@ public class Tile extends Actor {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Touched: x - " + getX() + ", y - " + getY());
                 System.out.println("Touched number: " + number);
-                PuzzleService.makeMove(GameScreen.puzzle,
-                        (int) getY() / level.imageHeight,
-                        (int) (getX() - xPadding) / level.imageWidth);
+                if (!GameScreen.puzzle.isSolved())
+                    PuzzleService.makeMove(GameScreen.puzzle,
+                            (int) getY() / level.imageHeight,
+                            (int) (getX() - xPadding) / level.imageWidth);
             }
         });
     }
