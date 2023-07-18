@@ -10,6 +10,15 @@ import java.util.List;
 
 public class LevelUtil {
 
+//        FileHandle file = Gdx.files.internal(chapter.name().toLowerCase() + SlASH + ticketNumber + JPG);
+//        if (file.exists()) {
+//            loadImage(innerTable, file);
+//        } else {
+//            file = Gdx.files.internal(chapter.name().toLowerCase() + SlASH + ticketNumber + PNG);
+//            if (file.exists()) {
+//                loadImage(innerTable, file);
+//            }
+//        }
 
     public static void prepareDefaultLevels() {
         Level level = new Level();

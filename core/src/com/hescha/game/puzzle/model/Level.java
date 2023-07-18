@@ -8,20 +8,9 @@ import lombok.Data;
 
 @Data
 public class Level implements Serializable {
-    LevelType type;
-    String category;
-    String name;
-    String texturePath;
-    boolean isNew;
-
-    @Override
-    public String toString() {
-        return "Level{" +
-                "type=" + type +
-                ", category=" + category +
-                ", name='" + name + '\'' +
-                ", texturePath='" + texturePath + '\'' +
-                ", isNew=" + isNew +
-                '}';
-    }
+    private LevelType type;
+    private String category;
+    private String name;
+    private String texturePath;
+    private boolean isNew;
 }

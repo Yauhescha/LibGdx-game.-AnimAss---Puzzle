@@ -2,7 +2,7 @@ package com.hescha.game.puzzle.screen;
 
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
-import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
+import static com.hescha.game.puzzle.AnimAssPuzzle.BACKGROUND_COLOR;
 import static com.hescha.game.puzzle.util.LevelUtil.loadLevels;
 
 import com.badlogic.gdx.Gdx;
@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -29,7 +28,6 @@ import com.hescha.game.puzzle.MyFunctionalInterface;
 import com.hescha.game.puzzle.model.Level;
 import com.hescha.game.puzzle.util.FontUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,39 +36,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SelectCategoryScreen extends ScreenAdapter {
     public static SelectCategoryScreen screen;
-    final LevelType levelType;
-    Stage stage;
-    BitmapFont font;
-    Table table;
-    Table innerTable;
-
-
-    Texture headerTexture;
-    Texture buttonTexture;
-    Texture backgroundImage;
-    Viewport viewport;
-    SpriteBatch batch;
-    OrthographicCamera camera;
+    private final LevelType levelType;
+    private Stage stage;
+    private BitmapFont font;
+    private Table innerTable;
+    private Viewport viewport;
 
     @Override
     public void show() {
         screen=this;
-        camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         viewport.apply(true);
-        batch = new SpriteBatch();
-        buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
-        headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
-//        backgroundImage = new Texture(Gdx.files.internal("ui/3 SelectLevel.png"));
+        Texture buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
+        Texture headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
 
-        table = new Table();
+        Table table = new Table();
         table.setFillParent(true);
         font = FontUtil.generateFont(Color.BLACK);
         innerTable = new Table();
         innerTable.setFillParent(true);
-
 
         createButton(headerTexture, levelType.name().replace("_", " "), 50, null);
         createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(SelectTypeScreen.screen)));
@@ -87,7 +74,6 @@ public class SelectCategoryScreen extends ScreenAdapter {
         for (String category:categories) {
             createButton(buttonTexture, category, 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType, category, levels))));
         }
-
 
         ScrollPane scrollPane = new ScrollPane(innerTable);
         table.add(scrollPane);
@@ -109,13 +95,7 @@ public class SelectCategoryScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(backgroundColor);
-        batch.setProjectionMatrix(camera.projection);
-        batch.setTransformMatrix(camera.view);
-        batch.begin();
-//        batch.draw(backgroundImage, 0, 0);
-        batch.end();
-
+        ScreenUtils.clear(BACKGROUND_COLOR);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

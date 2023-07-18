@@ -2,7 +2,7 @@ package com.hescha.game.puzzle.screen;
 
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
-import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
+import static com.hescha.game.puzzle.AnimAssPuzzle.BACKGROUND_COLOR;
 import static com.hescha.game.puzzle.util.LevelUtil.prepareDefaultLevels;
 
 import com.badlogic.gdx.Gdx;
@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,46 +19,38 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.hescha.game.puzzle.AnimAssPuzzle;
-import com.hescha.game.puzzle.model.Level;
 import com.hescha.game.puzzle.util.FontUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainMenuScreen extends ScreenAdapter {
     public static MainMenuScreen screen;
-    Stage stage;
-    BitmapFont font;
-    Table table;
-
-
-    Texture headerTexture;
-    Texture buttonTexture;
-    Texture mainImage;
-    Viewport viewport;
-    SpriteBatch batch;
+    private Stage stage;
+    private BitmapFont font;
+    private Viewport viewport;
 
     @Override
     public void show() {
-        screen=this;
+        screen = this;
         OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         viewport.apply(true);
-        batch = new SpriteBatch();
-        buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
-        headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
-        mainImage = new Texture(Gdx.files.internal("ui/MainImage.png"));
-
-        table = new Table();
-        table.setFillParent(true);
         font = FontUtil.generateFont(Color.BLACK);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        stage = new Stage(viewport);
+        stage.addActor(table);
+        Gdx.input.setInputProcessor(stage);
+
+        Texture buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
+        Texture headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
+        Texture mainImage = new Texture(Gdx.files.internal("ui/MainImage.png"));
 
         TextureRegion headerCover = new TextureRegion(headerTexture);
         TextureRegionDrawable buttonDrawable0 = new TextureRegionDrawable(headerCover);
@@ -96,30 +87,12 @@ public class MainMenuScreen extends ScreenAdapter {
             }
         });
 
-        stage = new Stage(viewport);
-        stage.addActor(table);
-        Gdx.input.setInputProcessor(stage);
-
         prepareDefaultLevels();
-
-
-//        FileHandle file = Gdx.files.internal(chapter.name().toLowerCase() + SlASH + ticketNumber + JPG);
-//        if (file.exists()) {
-//            loadImage(innerTable, file);
-//        } else {
-//            file = Gdx.files.internal(chapter.name().toLowerCase() + SlASH + ticketNumber + PNG);
-//            if (file.exists()) {
-//                loadImage(innerTable, file);
-//            }
-//        }
-
-
-        System.out.println("end");
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(backgroundColor);
+        ScreenUtils.clear(BACKGROUND_COLOR);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

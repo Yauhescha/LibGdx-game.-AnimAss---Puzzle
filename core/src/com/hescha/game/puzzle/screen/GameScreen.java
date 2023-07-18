@@ -2,23 +2,20 @@ package com.hescha.game.puzzle.screen;
 
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
-import static com.hescha.game.puzzle.AnimAssPuzzle.backgroundColor;
+import static com.hescha.game.puzzle.AnimAssPuzzle.BACKGROUND_COLOR;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -39,21 +36,14 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class GameScreen extends ScreenAdapter {
-    final Level level;
-    Texture levelTexture;
-    LevelType levelType;
-
-    private Viewport viewport;
-
-    private Stage stageInfo;
-    private GlyphLayout glyphLayout;
-    private BitmapFont bitmapFont;
-    private SpriteBatch batch;
-    TextureRegion[][] textureRegions;
     public static Puzzle puzzle;
-    ImageTextButton imageTextButton;
-    Integer movesMin;
-    String levelScoreSavingPath;
+    private final Level level;
+    private Viewport viewport;
+    private Stage stageInfo;
+    private BitmapFont bitmapFont;
+    private ImageTextButton imageTextButton;
+    private Integer movesMin;
+    private String levelScoreSavingPath;
 
     @Override
     public void show() {
@@ -63,14 +53,13 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         viewport = new FitViewport(worldWidth, WORLD_HEIGHT, camera);
         viewport.apply(true);
-        batch = new SpriteBatch();
+        SpriteBatch batch = new SpriteBatch();
 
-        glyphLayout = new GlyphLayout();
         bitmapFont = FontUtil.generateFont(Color.BLACK);
 
-        levelType = level.getType();
-        levelTexture = new Texture(Gdx.files.internal(level.getTexturePath()));
-        textureRegions = TextureRegion.split(levelTexture, levelType.imageWidth, levelType.imageHeight);
+        LevelType levelType = level.getType();
+        Texture levelTexture = new Texture(Gdx.files.internal(level.getTexturePath()));
+        TextureRegion[][] textureRegions = TextureRegion.split(levelTexture, levelType.imageWidth, levelType.imageHeight);
 
         puzzle = PuzzleService.newPuzzle(levelType, textureRegions);
         stageInfo = new Stage(viewport, batch);
@@ -131,20 +120,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        if (!puzzle.isSolved()) {
-            puzzle.setSolved(PuzzleService.isSolved(puzzle));
-        } else {
-            if (!puzzle.isSaved()) {
-                puzzle.setSaved(true);
-                int movesNumber = puzzle.getMovesNumber();
-
-                if (movesMin > movesNumber) {
-                    Preferences prefs = Gdx.app.getPreferences("AnimAss_Puzzle");
-                    prefs.putInteger(levelScoreSavingPath, movesNumber);
-                    prefs.flush();
-                }
-            }
-        }
+        updatePuzzleStatus();
 
         String status = puzzle.isSolved() ? "Solved" : "Playing";
 
@@ -153,10 +129,31 @@ public class GameScreen extends ScreenAdapter {
                 + "Moves: " + puzzle.getMovesNumber() + "\n"
                 + "Moves min: " + movesMin;
         imageTextButton.getLabel().setText(newText);
-        ScreenUtils.clear(backgroundColor);
+        ScreenUtils.clear(BACKGROUND_COLOR);
 
         stageInfo.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stageInfo.draw();
+    }
+
+    private void updatePuzzleStatus() {
+        if (!puzzle.isSolved()) {
+            puzzle.setSolved(PuzzleService.isSolved(puzzle));
+        } else {
+            if (!puzzle.isSaved()) {
+                saveBestResult();
+            }
+        }
+    }
+
+    private void saveBestResult() {
+        puzzle.setSaved(true);
+        int movesNumber = puzzle.getMovesNumber();
+
+        if (movesMin > movesNumber) {
+            Preferences prefs = Gdx.app.getPreferences("AnimAss_Puzzle");
+            prefs.putInteger(levelScoreSavingPath, movesNumber);
+            prefs.flush();
+        }
     }
 
     @Override

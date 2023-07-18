@@ -31,8 +31,8 @@ public class Tile extends Actor {
         addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Touched: x - " + getX() + ", y - " + getY());
-                System.out.println("Touched number: " + number);
+//                System.out.println("Touched: x - " + getX() + ", y - " + getY());
+//                System.out.println("Touched number: " + number);
                 if (!GameScreen.puzzle.isSolved())
                     PuzzleService.makeMove(GameScreen.puzzle,
                             (int) getY() / level.imageHeight,
