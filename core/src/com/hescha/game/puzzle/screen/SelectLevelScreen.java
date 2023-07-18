@@ -55,7 +55,7 @@ public class SelectLevelScreen extends ScreenAdapter {
     SpriteBatch batch;
     OrthographicCamera camera;
 
-    public SelectLevelScreen(LevelType levelType, String category, ArrayList<Level> levels) {
+    public SelectLevelScreen(LevelType levelType, String category, List<Level> levels) {
         this.levelType = levelType;
         this.category = category;
         this.levels = levels.stream().filter(level -> category.equals(level.getCategory())).collect(Collectors.toList());

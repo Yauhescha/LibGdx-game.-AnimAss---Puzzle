@@ -26,10 +26,26 @@ public class LevelUtil {
         level2.setNew(false);
         level2.setTexturePath("levels/3x3/2.jpg");
 
+        Level level3 = new Level();
+        level3.setName("Third level");
+        level3.setCategory("Succubus");
+        level3.setType(LevelType.LEVEL_3X5);
+        level3.setNew(false);
+        level3.setTexturePath("levels/3x5/1.jpg");
+
+        Level level4 = new Level();
+        level4.setName("Fourth level");
+        level4.setCategory("Succubus");
+        level4.setType(LevelType.LEVEL_4X6);
+        level4.setNew(false);
+        level4.setTexturePath("levels/4x6/1.jpg");
+
 
         List<Level> levels = new ArrayList<>();
         levels.add(level);
         levels.add(level2);
+        levels.add(level3);
+        levels.add(level4);
 
 
         Json json = new Json();

@@ -75,9 +75,11 @@ public class SelectCategoryScreen extends ScreenAdapter {
         createButton(headerTexture, levelType.name().replace("_", " "), 50, null);
         createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(SelectTypeScreen.screen)));
 
-        ArrayList<Level> levels = loadLevels();
-        List<String> categories = levels.stream()
+        List<Level> levels = loadLevels().stream()
                 .filter(level -> levelType == level.getType())
+                .collect(Collectors.toList());
+        List<String> categories = levels
+                .stream()
                 .map(Level::getCategory)
                 .distinct()
                 .collect(Collectors.toList());
