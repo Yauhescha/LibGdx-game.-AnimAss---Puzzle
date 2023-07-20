@@ -1,12 +1,20 @@
 package com.hescha.game.puzzle.util;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.utils.Json;
 import com.hescha.game.puzzle.model.Level;
 import com.hescha.game.puzzle.screen.LevelType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 
 public class LevelUtil {
 
@@ -27,6 +35,13 @@ public class LevelUtil {
         level.setType(LevelType.LEVEL_4X4);
         level.setNew(false);
         level.setTexturePath("levels/3x3/1.jpg");
+
+        Level levelInternet = new Level();
+        levelInternet.setName("levelInternet");
+        levelInternet.setCategory("internet");
+        levelInternet.setType(LevelType.LEVEL_3X3);
+        levelInternet.setNew(true);
+        levelInternet.setTexturePath("https://naru-naru.ucoz.ru/animass/puzzle/witch-12-.jpg");
 
         Level level2 = new Level();
         level2.setName("Second level");
@@ -55,8 +70,9 @@ public class LevelUtil {
         levels.add(level2);
         levels.add(level3);
         levels.add(level4);
-
-
+        levels.add(levelInternet);
+        downloadImage(levelInternet.getTexturePath(), "levels/img.png");
+        levelInternet.setTexturePath("levels/img.png");
         Json json = new Json();
         String levelsJson = json.toJson(levels);
         Gdx.files.local("levels.json").writeString(levelsJson, false);
@@ -67,5 +83,42 @@ public class LevelUtil {
         Json json = new Json();
         return json.fromJson(ArrayList.class, Level.class, jsonData);
     }
+
+
+    public static void downloadImage(String imageUrl, final String savePath) {
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+        Net.HttpRequest httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url(imageUrl).build();
+        Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                byte[] imageBytes = httpResponse.getResult();
+                Pixmap pixmap = new Pixmap(imageBytes, 0, imageBytes.length);
+                savePixmap(pixmap, savePath);
+                pixmap.dispose();
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                System.out.println("!!!!!!!!!!!!2222222222222222222!!!!!!!!!!!!!!!!");
+                System.out.println();
+                t.printStackTrace();
+                // Handle failure
+            }
+
+            @Override
+            public void cancelled() {
+                System.out.println("!!!!!!!!!!e333333333333333333333!!!!!!!!!!!!!!!!!!");
+                // Handle cancellation
+            }
+        });
+    }
+
+
+    public static void savePixmap(Pixmap pixmap, String savePath) {
+        PixmapIO.writePNG(Gdx.files.local(savePath), pixmap);
+        System.out.println("LEVEL SAVED!!!!!!!!!!!");
+    }
+
 
 }
