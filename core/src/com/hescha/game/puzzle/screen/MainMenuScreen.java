@@ -3,6 +3,7 @@ package com.hescha.game.puzzle.screen;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 import static com.hescha.game.puzzle.AnimAssPuzzle.BACKGROUND_COLOR;
+import static com.hescha.game.puzzle.util.LevelUtil.loadNewLevels;
 import static com.hescha.game.puzzle.util.LevelUtil.prepareDefaultLevels;
 
 import com.badlogic.gdx.Gdx;
@@ -88,6 +89,7 @@ public class MainMenuScreen extends ScreenAdapter {
         });
 
         prepareDefaultLevels();
+        loadNewLevels();
     }
 
     @Override
