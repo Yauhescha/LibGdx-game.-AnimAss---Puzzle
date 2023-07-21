@@ -31,9 +31,6 @@ import com.hescha.game.puzzle.util.FontUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class SelectCategoryScreen extends ScreenAdapter {
     public static SelectCategoryScreen screen;
     private final LevelType levelType;
@@ -41,10 +38,16 @@ public class SelectCategoryScreen extends ScreenAdapter {
     private BitmapFont font;
     private Table innerTable;
     private Viewport viewport;
+    private boolean isGalleryMode;
+
+    public SelectCategoryScreen(LevelType levelType, boolean isGalleryMode) {
+        this.levelType = levelType;
+        this.isGalleryMode = isGalleryMode;
+    }
 
     @Override
     public void show() {
-        screen=this;
+        screen = this;
         OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         camera.update();
@@ -71,8 +74,8 @@ public class SelectCategoryScreen extends ScreenAdapter {
                 .distinct()
                 .collect(Collectors.toList());
 
-        for (String category:categories) {
-            createButton(buttonTexture, category, 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType, category, levels))));
+        for (String category : categories) {
+            createButton(buttonTexture, category, 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType, category, levels, isGalleryMode))));
         }
 
         ScrollPane scrollPane = new ScrollPane(innerTable);

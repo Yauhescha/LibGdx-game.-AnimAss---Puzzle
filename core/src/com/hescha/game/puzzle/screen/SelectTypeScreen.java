@@ -34,6 +34,11 @@ public class SelectTypeScreen extends ScreenAdapter {
     private Table innerTable;
 
     private Viewport viewport;
+    boolean isGalleryMode = false;
+
+    public SelectTypeScreen(boolean isGalleryMode) {
+        this.isGalleryMode = isGalleryMode;
+    }
 
     @Override
     public void show() {
@@ -55,11 +60,11 @@ public class SelectTypeScreen extends ScreenAdapter {
 
         createButton(headerTexture, "CATEGORIES", 50, null);
         createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(MainMenuScreen.screen)));
-        createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X3))));
-        createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X4))));
-        createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_5X5))));
-        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X5))));
-        createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X6))));
+        createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X3, isGalleryMode))));
+        createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X4, isGalleryMode))));
+        createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_5X5, isGalleryMode))));
+        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X5, isGalleryMode))));
+        createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X6, isGalleryMode))));
 
 
         ScrollPane scrollPane = new ScrollPane(innerTable);

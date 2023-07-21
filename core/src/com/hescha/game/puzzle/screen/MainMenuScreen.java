@@ -68,7 +68,7 @@ public class MainMenuScreen extends ScreenAdapter {
         imageTextButton1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                AnimAssPuzzle.launcher.setScreen(new SelectTypeScreen());
+                AnimAssPuzzle.launcher.setScreen(new SelectTypeScreen(false));
             }
         });
 
@@ -76,6 +76,12 @@ public class MainMenuScreen extends ScreenAdapter {
         TextureRegionDrawable buttonDrawable2 = new TextureRegionDrawable(bthGallery);
         ImageTextButton imageTextButton2 = new ImageTextButton("GALLERY", new ImageTextButton.ImageTextButtonStyle(buttonDrawable2, null, null, font));
         table.add(imageTextButton2).center().padTop(10).padBottom(10).row();
+        imageTextButton2.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                AnimAssPuzzle.launcher.setScreen(new SelectTypeScreen(true));
+            }
+        });
 
         TextureRegion bthExit = new TextureRegion(buttonTexture);
         TextureRegionDrawable buttonDrawable3 = new TextureRegionDrawable(bthExit);

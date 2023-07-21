@@ -154,7 +154,7 @@ public class LevelUtil {
 
             @Override
             public void cancelled() {
-                System.out.println("Loading image cancelled");
+                System.out.println("Loading image " + level.getTexturePath() + " cancelled");
             }
         });
 
@@ -162,8 +162,9 @@ public class LevelUtil {
 
 
     public static void savePixmap(Pixmap pixmap, String savePath) {
+        System.out.println("Saving image by path " + savePath);
         PixmapIO.writePNG(Gdx.files.local(savePath), pixmap);
-        System.out.println("LEVEL SAVED!!!!!!!!!!!");
+        System.out.println("Image saved");
     }
 
 

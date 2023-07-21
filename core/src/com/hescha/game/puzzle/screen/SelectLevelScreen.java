@@ -5,6 +5,7 @@ import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 import static com.hescha.game.puzzle.AnimAssPuzzle.BACKGROUND_COLOR;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -42,11 +43,13 @@ public class SelectLevelScreen extends ScreenAdapter {
     private BitmapFont font;
     private Table innerTable;
     private Viewport viewport;
+    private boolean isGalleryMode;
 
-    public SelectLevelScreen(LevelType levelType, String category, List<Level> levels) {
+    public SelectLevelScreen(LevelType levelType, String category, List<Level> levels, boolean isGalleryMode) {
         this.levelType = levelType;
         this.category = category;
         this.levels = levels.stream().filter(level -> category.equals(level.getCategory())).collect(Collectors.toList());
+        this.isGalleryMode = isGalleryMode;
     }
 
     @Override
@@ -58,6 +61,8 @@ public class SelectLevelScreen extends ScreenAdapter {
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         viewport.apply(true);
         Texture buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
+        Texture closedButtonTexture = new Texture(Gdx.files.internal("ui/ClosedButton.png"));
+        Texture buttonGreenTexture = new Texture(Gdx.files.internal("ui/buttonGreen.png"));
         Texture headerTexture = new Texture(Gdx.files.internal("ui/header.png"));
 
         Table table = new Table();
@@ -71,8 +76,20 @@ public class SelectLevelScreen extends ScreenAdapter {
         createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(SelectCategoryScreen.screen)));
 
 
+        Preferences prefs = Gdx.app.getPreferences("AnimAss_Puzzle");
         for (Level level : levels) {
-            createButton(buttonTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(level))));
+            if (!isGalleryMode) {
+                createButton(buttonTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(level))));
+            } else {
+
+                String levelScoreSavingPath = levelType.name() + "-" + level.getCategory() + "-" + level.getName();
+                int moves = prefs.getInteger(levelScoreSavingPath, -1);
+                if (moves != -1) {
+                    createButton(buttonGreenTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GalleryScreen(level))));
+                } else {
+                    createButton(closedButtonTexture, level.getName(), 10, null);
+                }
+            }
         }
 
 
