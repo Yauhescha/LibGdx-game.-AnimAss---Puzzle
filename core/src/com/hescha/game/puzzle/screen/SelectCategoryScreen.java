@@ -1,7 +1,5 @@
 package com.hescha.game.puzzle.screen;
 
-import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
-import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 import static com.hescha.game.puzzle.AnimAssPuzzle.BACKGROUND_COLOR;
 import static com.hescha.game.puzzle.util.LevelUtil.loadLevels;
 
@@ -63,7 +61,7 @@ public class SelectCategoryScreen extends ScreenAdapter {
         table.setFillParent(true);
         font = FontUtil.generateFont(Color.BLACK);
         innerTable = new Table();
-        innerTable.setFillParent(true);
+//        innerTable.setFillParent(true);
 
         createButton(headerTexture, levelType.name().replace("_", " "), 50, null);
         createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(SelectTypeScreen.screen)));
@@ -78,19 +76,19 @@ public class SelectCategoryScreen extends ScreenAdapter {
                 .collect(Collectors.toList());
 
         for (String category : categories) {
-            createButton(buttonTexture, category, 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType, category, levels, isGalleryMode))));
+            createButton(buttonTexture, category, 0, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectLevelScreen(levelType, category, levels, isGalleryMode))));
         }
+
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
+        Label emptyLabel1 = new Label("", labelStyle);
+        innerTable.add(emptyLabel1).pad(200).row();
 
         ScrollPane scrollPane = new ScrollPane(innerTable);
         table.add(scrollPane);
         stage = new Stage(viewport);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
-
-
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
-        Label emptyLabel1 = new Label("", labelStyle);
-        innerTable.add(emptyLabel1).pad(200).row();
     }
 
     private void createButton(Texture headerTexture, String CATEGORIES, int padBottom, EventListener listener) {

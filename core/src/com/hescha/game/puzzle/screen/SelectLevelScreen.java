@@ -72,7 +72,7 @@ public class SelectLevelScreen extends ScreenAdapter {
         table.setFillParent(true);
         font = FontUtil.generateFont(Color.BLACK);
         innerTable = new Table();
-        innerTable.setFillParent(true);
+//        innerTable.setFillParent(true);
 
 
         createButton(headerTexture, levelType.name().replace("_", " ") + "\n" + category, 50, null);
@@ -88,7 +88,6 @@ public class SelectLevelScreen extends ScreenAdapter {
 
             if (isPassed && isGalleryMode) {
                 createButton(buttonGreenTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GalleryScreen(level))));
-
             } else if (isPassed && !isGalleryMode) {
                 createButton(buttonGreenTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(level))));
             } else if (!isPassed && isGalleryMode) {

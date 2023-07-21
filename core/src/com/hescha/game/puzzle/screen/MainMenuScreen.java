@@ -24,8 +24,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.hescha.game.puzzle.AnimAssPuzzle;
 import com.hescha.game.puzzle.util.FontUtil;
 
-import java.util.List;
-
 
 public class MainMenuScreen extends ScreenAdapter {
     public static MainMenuScreen screen;
