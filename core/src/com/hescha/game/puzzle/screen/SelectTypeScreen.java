@@ -58,12 +58,12 @@ public class SelectTypeScreen extends ScreenAdapter {
         innerTable.setFillParent(true);
 
 
-        createButton(headerTexture, "CATEGORIES", 50, null);
+        createButton(headerTexture, isGalleryMode ? "GALLERY" : "CATEGORIES", 50, null);
         createButton(buttonTexture, "BACK", 100, addAction(() -> AnimAssPuzzle.launcher.setScreen(MainMenuScreen.screen)));
         createButton(buttonTexture, "3x3", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X3, isGalleryMode))));
         createButton(buttonTexture, "4x4", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X4, isGalleryMode))));
         createButton(buttonTexture, "5x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_5X5, isGalleryMode))));
-        createButton(buttonTexture, "3x5", 50, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X5, isGalleryMode))));
+        createButton(buttonTexture, "3x5", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_3X5, isGalleryMode))));
         createButton(buttonTexture, "4x6", 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new SelectCategoryScreen(LEVEL_4X6, isGalleryMode))));
 
 

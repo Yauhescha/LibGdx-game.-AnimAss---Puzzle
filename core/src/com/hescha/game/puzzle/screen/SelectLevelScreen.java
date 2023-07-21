@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -55,10 +56,12 @@ public class SelectLevelScreen extends ScreenAdapter {
     @Override
     public void show() {
         screen = this;
-        OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
+        float worldWidth = Gdx.graphics.getWidth();
+        float worldHeight = Gdx.graphics.getHeight();
+        OrthographicCamera camera = new OrthographicCamera(worldWidth, worldHeight);
+        camera.position.set(worldWidth / 2, worldHeight / 2, 0);
         camera.update();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(worldWidth, worldHeight, camera);
         viewport.apply(true);
         Texture buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
         Texture closedButtonTexture = new Texture(Gdx.files.internal("ui/ClosedButton.png"));
@@ -98,6 +101,10 @@ public class SelectLevelScreen extends ScreenAdapter {
         stage = new Stage(viewport);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
+        Label emptyLabel1 = new Label("", labelStyle);
+        innerTable.add(emptyLabel1).pad(200).row();
     }
 
     private void createButton(Texture headerTexture, String CATEGORIES, int padBottom, EventListener listener) {

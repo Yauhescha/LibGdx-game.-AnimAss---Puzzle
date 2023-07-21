@@ -43,11 +43,12 @@ public class GalleryScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        float worldWidth = WORLD_WIDTH;
-        OrthographicCamera camera = new OrthographicCamera(worldWidth, WORLD_HEIGHT);
-        camera.position.set(worldWidth / 2, WORLD_HEIGHT / 2, 0);
+        float worldWidth = 512;
+        float worldHeight = 1280;
+        OrthographicCamera camera = new OrthographicCamera(worldWidth, worldHeight);
+        camera.position.set(worldWidth / 2, worldHeight / 2, 0);
         camera.update();
-        viewport = new FitViewport(worldWidth, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(worldWidth, worldHeight, camera);
         viewport.apply(true);
         SpriteBatch batch = new SpriteBatch();
 
@@ -66,7 +67,7 @@ public class GalleryScreen extends ScreenAdapter {
         table.setFillParent(true);
 
 
-        Texture mainImage = new Texture(Gdx.files.local(level.getTexturePath()));
+        Texture mainImage = new Texture(Gdx.files.internal(level.getTexturePath()));
         TextureRegion mainBoard = new TextureRegion(mainImage);
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(mainBoard);
         ImageTextButton imageTextButton = new ImageTextButton("", new ImageTextButton.ImageTextButtonStyle(buttonDrawable, null, null, font));
