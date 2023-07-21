@@ -39,7 +39,7 @@ public class SelectCategoryScreen extends ScreenAdapter {
     private BitmapFont font;
     private Table innerTable;
     private Viewport viewport;
-    private boolean isGalleryMode;
+    private final boolean isGalleryMode;
 
     public SelectCategoryScreen(LevelType levelType, boolean isGalleryMode) {
         this.levelType = levelType;

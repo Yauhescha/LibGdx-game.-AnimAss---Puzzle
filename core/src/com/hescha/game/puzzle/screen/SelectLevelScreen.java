@@ -81,17 +81,20 @@ public class SelectLevelScreen extends ScreenAdapter {
 
         Preferences prefs = Gdx.app.getPreferences("AnimAss_Puzzle");
         for (Level level : levels) {
-            if (!isGalleryMode) {
-                createButton(buttonTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(level))));
-            } else {
 
-                String levelScoreSavingPath = levelType.name() + "-" + level.getCategory() + "-" + level.getName();
-                int moves = prefs.getInteger(levelScoreSavingPath, -1);
-                if (moves != -1) {
-                    createButton(buttonGreenTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GalleryScreen(level))));
-                } else {
-                    createButton(closedButtonTexture, level.getName(), 10, null);
-                }
+            String levelScoreSavingPath = levelType.name() + "-" + level.getCategory() + "-" + level.getName();
+            int moves = prefs.getInteger(levelScoreSavingPath, -1);
+            boolean isPassed = moves != -1;
+
+            if (isPassed && isGalleryMode) {
+                createButton(buttonGreenTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GalleryScreen(level))));
+
+            } else if (isPassed && !isGalleryMode) {
+                createButton(buttonGreenTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(level))));
+            } else if (!isPassed && isGalleryMode) {
+                createButton(closedButtonTexture, level.getName(), 10, null);
+            } else if (!isPassed && !isGalleryMode) {
+                createButton(buttonTexture, level.getName(), 10, addAction(() -> AnimAssPuzzle.launcher.setScreen(new GameScreen(level))));
             }
         }
 
