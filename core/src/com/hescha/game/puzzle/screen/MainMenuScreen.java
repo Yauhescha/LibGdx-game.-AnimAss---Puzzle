@@ -3,8 +3,6 @@ package com.hescha.game.puzzle.screen;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_HEIGHT;
 import static com.hescha.game.puzzle.AnimAssPuzzle.WORLD_WIDTH;
 import static com.hescha.game.puzzle.AnimAssPuzzle.BACKGROUND_COLOR;
-import static com.hescha.game.puzzle.util.LevelUtil.loadNewLevels;
-import static com.hescha.game.puzzle.util.LevelUtil.prepareDefaultLevels;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -25,6 +23,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.hescha.game.puzzle.AnimAssPuzzle;
 import com.hescha.game.puzzle.util.FontUtil;
+
+import java.util.List;
 
 
 public class MainMenuScreen extends ScreenAdapter {
@@ -94,8 +94,6 @@ public class MainMenuScreen extends ScreenAdapter {
             }
         });
 
-        prepareDefaultLevels();
-        loadNewLevels();
     }
 
     @Override

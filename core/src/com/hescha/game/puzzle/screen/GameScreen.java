@@ -58,7 +58,7 @@ public class GameScreen extends ScreenAdapter {
         bitmapFont = FontUtil.generateFont(Color.BLACK);
 
         LevelType levelType = level.getType();
-        Texture levelTexture = new Texture(Gdx.files.local(level.getTexturePath()));
+        Texture levelTexture = new Texture(Gdx.files.internal(level.getTexturePath()));
         TextureRegion[][] textureRegions = TextureRegion.split(levelTexture, levelType.imageWidth, levelType.imageHeight);
 
         puzzle = PuzzleService.newPuzzle(levelType, textureRegions);
